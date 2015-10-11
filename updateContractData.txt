@@ -1,0 +1,15 @@
+data owner
+data sub
+
+if ~div(~calldataload(0), 2**224) == 0:
+    if self.owner == msg.sender:
+        self.owner = ~calldataload(4)
+elif ~div(~calldataload(0), 2**224) == 1:
+    if self.owner == msg.sender:
+        self.sub = ~calldataload(4)
+else:
+    in = ~alloc(~calldatasize())
+    ~calldatacopy(in, 0, ~calldatasize())
+    out = ~alloc(10000)
+    ~callcode(msg.gas - 8000, self.sub, msg.value, in, ~calldatasize(), out, 10000)
+    ~return(out, 10000)
